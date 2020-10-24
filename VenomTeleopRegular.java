@@ -10,7 +10,6 @@ package org.firstinspires.ftc.teamcode;
 @TeleOp(name = "Prototype Regular TeleOp", group = "Teleop")
 public class VenomTeleopRegular extends OpMode {
 
-    HardwareMap hardwareMap = new HardwareMap();
     private DcMotor leftFrontMotor;
     private DcMotor rightFrontMotor;
     private DcMotor leftBackMotor;

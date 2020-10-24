@@ -181,4 +181,11 @@ public class IMU extends LinearOpMode
     String formatDegrees(double degrees){
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
+
+    public void getHeading(double targetPosition){
+        double current = 0;
+        while(current < targetPosition){
+            current += 2;
+        }
+    }
 }

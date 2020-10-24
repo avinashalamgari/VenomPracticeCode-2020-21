@@ -30,9 +30,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.gamepad1;
 
 /**
  * This is NOT an opmode.
@@ -53,11 +56,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class HardwareTest
 {
     /* Public OpMode members. */
-    public DcMotor  leftDrive   = null;
-    public DcMotor  rightDrive  = null;
-    public DcMotor  leftArm     = null;
-    public Servo    leftClaw    = null;
-    public Servo    rightClaw   = null;
+    private DcMotor leftBackMotor;
+    private DcMotor rightBackMotor;
+    private DcMotor leftFrontMotor;
+    private DcMotor rightFrontMotor;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -78,28 +80,81 @@ public class HardwareTest
         hwMap = ahwMap;
 
         // Define and Initialize Motors
-        leftDrive  = hwMap.get(DcMotor.class, "left_drive");
-        rightDrive = hwMap.get(DcMotor.class, "right_drive");
-        leftArm    = hwMap.get(DcMotor.class, "left_arm");
-        leftDrive.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);// Set to FORWARD if using AndyMark motors
+        leftBackMotor  = hwMap.get(DcMotor.class, "leftBackDrive");
+        leftFrontMotor = hwMap.get(DcMotor.class, "leftFrontDrive");
+        rightBackMotor = hwMap.get(DcMotor.class, "rightBackDrive");
+        rightFrontMotor = hwMap.get(DcMotor.class, "rightFrontDrive");
+        //leftArm    = hwMap.get(DcMotor.class, "left_arm");
+        leftBackMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
+        leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        rightBackMotor.setDirection((DcMotor.Direction.REVERSE));
+        rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Set all motors to zero power
-        leftDrive.setPower(0);
-        rightDrive.setPower(0);
-        leftArm.setPower(0);
+        leftBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+        leftFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        //leftArm.setPower(0);
 
         // Set all motors to run without encoders.
         // May want to use RUN_USING_ENCODERS if encoders are installed.
-        leftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       // leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        // Define and initialize ALL installed servos.
-        leftClaw  = hwMap.get(Servo.class, "left_hand");
-        rightClaw = hwMap.get(Servo.class, "right_hand");
-        leftClaw.setPosition(MID_SERVO);
-        rightClaw.setPosition(MID_SERVO);
+//        // Define and initialize ALL installed servos.
+//        leftClaw  = hwMap.get(Servo.class, "left_hand");
+//        rightClaw = hwMap.get(Servo.class, "right_hand");
+//        leftClaw.setPosition(MID_SERVO);
+//        rightClaw.setPosition(MID_SERVO);
     }
+
+    public void turn(double turnPower, double target){
+
+
+        double current = 0;
+        double error = target-current;
+        double prevError = 0;
+
+        double proportional;
+        double integral = 0;
+        double derivative = 0;
+
+        double prevTime = 0;
+
+
+        double kP = 0.6/90;
+        double kI = 0.012;
+        double kD = 0.02/90;
+
+
+        while(Math.abs(error) >= 1){
+            //current = gyro.getHeader();            //fix error (no gryo method exists)
+            error = Math.abs(target - current);
+            proportional = error*kP;
+            integral += error * ((System.currentTimeMillis()/1000)-prevTime) * kI;
+            derivative = (error - prevError) / ((System.currentTimeMillis()/1000) - prevTime) * kD;
+            turnPower = proportional + integral + derivative;
+        }
+
+        if(gamepad1.right_stick_y > 0){
+            leftBackMotor.setPower(turnPower);
+            leftFrontMotor.setPower(turnPower);
+            rightFrontMotor.setPower(-turnPower);
+            rightBackMotor.setPower(-turnPower);
+        }
+        if(gamepad1.right_stick_y < 0){
+            leftBackMotor.setPower(-turnPower);
+            leftFrontMotor.setPower(-turnPower);
+            rightFrontMotor.setPower(turnPower);
+            rightBackMotor.setPower(turnPower);
+        }
+    }
+
+
  }
 
