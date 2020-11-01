@@ -10,23 +10,24 @@ package org.firstinspires.ftc.teamcode;
 @TeleOp(name = "Prototype Regular TeleOp", group = "Teleop")
 public class VenomTeleopRegular extends OpMode {
 
-    private DcMotor leftFrontMotor;
-    private DcMotor rightFrontMotor;
-    private DcMotor leftBackMotor;
-    private DcMotor rightBackMotor;
+//    private DcMotor leftFrontMotor;
+//    private DcMotor rightFrontMotor;
+//    private DcMotor leftBackMotor;
+//    private DcMotor rightBackMotor;
 
     //private Servo arm;
 
+    HardwareTest robot = new HardwareTest();
 
     @Override
     public void init(){
-        leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
-        leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
-        rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
-        rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
+        robot.leftFrontMotor = hardwareMap.dcMotor.get("leftFrontMotor");
+        robot.leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
+        robot.rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
+        robot.rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
 
-        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
-        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+        robot.leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        robot.leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
     }
 
 
@@ -40,10 +41,10 @@ public class VenomTeleopRegular extends OpMode {
         double power = gamepad1.left_stick_y;
 
 
-        leftFrontMotor.setPower(power);
-        leftBackMotor.setPower(power);
-        rightFrontMotor.setPower(power);
-        rightBackMotor.setPower(power);
+        robot.leftFrontMotor.setPower(power);
+        robot.leftBackMotor.setPower(power);
+        robot.rightFrontMotor.setPower(power);
+        robot.rightBackMotor.setPower(power);
     }
 
     public void doTurn(){
@@ -52,15 +53,15 @@ public class VenomTeleopRegular extends OpMode {
         telemetry.addData("Turn Power", turnPower);
 
         if(turnPower > 0.5) {
-            leftFrontMotor.setPower(turnPower);
-            leftBackMotor.setPower(turnPower);
-            rightFrontMotor.setPower(-turnPower);
-            rightBackMotor.setPower(-turnPower);
+            robot.leftFrontMotor.setPower(turnPower);
+            robot.leftBackMotor.setPower(turnPower);
+            robot.rightFrontMotor.setPower(-turnPower);
+            robot.rightBackMotor.setPower(-turnPower);
         } else {
-            leftFrontMotor.setPower(-turnPower);
-            leftBackMotor.setPower(-turnPower);
-            rightFrontMotor.setPower(turnPower);
-            rightBackMotor.setPower(turnPower);
+            robot.leftFrontMotor.setPower(-turnPower);
+            robot.leftBackMotor.setPower(-turnPower);
+            robot.rightFrontMotor.setPower(turnPower);
+            robot.rightBackMotor.setPower(turnPower);
         }
 
     }

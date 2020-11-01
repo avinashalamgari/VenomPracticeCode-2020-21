@@ -182,10 +182,10 @@ public class IMU extends LinearOpMode
         return String.format(Locale.getDefault(), "%.1f", AngleUnit.DEGREES.normalize(degrees));
     }
 
-    public void getHeading(double targetPosition){
+    public void getHeading(double targetPosition, double speed){
         double current = 0;
         while(current < targetPosition){
-            current += 2;
+            current += speed;
         }
     }
 }
