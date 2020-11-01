@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -60,6 +61,7 @@ public class HardwareTest
     public DcMotor rightBackMotor;
     public DcMotor leftFrontMotor;
     public DcMotor rightFrontMotor;
+    public GyroSensor gyro;
 
     public static final double MID_SERVO       =  0.5 ;
     public static final double ARM_UP_POWER    =  0.45 ;
@@ -78,7 +80,9 @@ public class HardwareTest
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
         hwMap = ahwMap;
-
+        //gyro = hardwareMap.gyroSensor.get("gyro");
+        gyro  = hwMap.gyroSensor.get("gyro");
+        gyro = hwMap.get(GyroSensor.class, "gyro");
         // Define and Initialize Motors
         leftBackMotor  = hwMap.get(DcMotor.class, "leftBackDrive");
         leftFrontMotor = hwMap.get(DcMotor.class, "leftFrontDrive");
@@ -113,47 +117,39 @@ public class HardwareTest
 //        rightClaw.setPosition(MID_SERVO);
     }
 
-    public void turn(double turnPower, double target){
-
-
-        double current = 0;
-        double error = target-current;
-        double prevError = 0;
-
-        double proportional;
-        double integral = 0;
-        double derivative = 0;
-
-        double prevTime = 0;
-
-
-        double kP = 0.6/90;
-        double kI = 0.012;
-        double kD = 0.02/90;
-
-
-        while(Math.abs(error) >= 1){
-            //current = gyro.getHeader();            //fix error (no gryo method exists)
-            error = Math.abs(target - current);
-            proportional = error*kP;
-            integral += error * ((System.currentTimeMillis()/1000)-prevTime) * kI;
-            derivative = (error - prevError) / ((System.currentTimeMillis()/1000) - prevTime) * kD;
-            turnPower = proportional + integral + derivative;
-        }
-
-        if(gamepad1.right_stick_y > 0){
-            leftBackMotor.setPower(turnPower);
-            leftFrontMotor.setPower(turnPower);
-            rightFrontMotor.setPower(-turnPower);
-            rightBackMotor.setPower(-turnPower);
-        }
-        if(gamepad1.right_stick_y < 0){
-            leftBackMotor.setPower(-turnPower);
-            leftFrontMotor.setPower(-turnPower);
-            rightFrontMotor.setPower(turnPower);
-            rightBackMotor.setPower(turnPower);
-        }
-    }
+//    public void turn(double turnPower, double target){
+//
+//
+//        double current = 0;
+//        double error = target-current;
+//        double prevError = 0;
+//
+//        double proportional;
+//        double integral = 0;
+//        double derivative = 0;
+//
+//        double prevTime = 0;
+//
+//
+//        double kP = 0.6/90;
+//        double kI = 0.012;
+//        double kD = 0.02/90;
+//
+//
+//        while(Math.abs(error) >= 1){
+//            //current = gyro.getHeader();            //fix error (no gryo method exists)
+//            error = Math.abs(target - current);
+//            proportional = error*kP;
+//            integral += error * ((System.currentTimeMillis()/1000)-prevTime) * kI;
+//            derivative = (error - prevError) / ((System.currentTimeMillis()/1000) - prevTime) * kD;
+//            turnPower = proportional + integral + derivative;
+//        }
+//
+//            leftBackMotor.setPower(turnPower);
+//            leftFrontMotor.setPower(turnPower);
+//            rightFrontMotor.setPower(-turnPower);
+//            rightBackMotor.setPower(-turnPower);
+//    }
 
     public void doDrive( double inches, double power){
 

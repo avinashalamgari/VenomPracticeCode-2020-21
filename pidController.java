@@ -19,7 +19,6 @@ public class pidController extends LinearOpMode {
 
 
     HardwareTest robot = new HardwareTest();
-    GyroSensor gyro;
     public void runOpMode(){
 
 
@@ -60,26 +59,17 @@ public class pidController extends LinearOpMode {
             derivative = (error - prevError) / ((System.currentTimeMillis()/1000) - prevTime) * kD;
             turnPower = proportional + integral + derivative;
         }
-
-        if(gamepad1.right_stick_y > 0){
             robot.leftBackMotor.setPower(turnPower);
             robot.leftFrontMotor.setPower(turnPower);
             robot.rightFrontMotor.setPower(-turnPower);
             robot.rightBackMotor.setPower(-turnPower);
-        }
-        if(gamepad1.right_stick_y < 0){
-            robot.leftBackMotor.setPower(-turnPower);
-            robot.leftFrontMotor.setPower(-turnPower);
-            robot.rightFrontMotor.setPower(turnPower);
-            robot.rightBackMotor.setPower(turnPower);
-        }
+
     }
 
 
     public double getCurrentAngle(){
         double currentAngle = 0;
-        gyro = hardwareMap.gyroSensor.get("gyro");
-        currentAngle = gyro.getHeading();
+        currentAngle = robot.gyro.getHeading();
         return currentAngle;
     }
 }
