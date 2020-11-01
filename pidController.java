@@ -2,19 +2,24 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+import com.qualcomm.robotcore.hardware.OrientationSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Axis;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+
+import java.util.Set;
 
 
 @Autonomous(name = "PidTest", group = "6209")
 public class pidController extends LinearOpMode {
 
-    // Adding the necessary objects
-    //IMU gyro = new IMU();
-    Orientation gyro = new Orientation();
+
     HardwareTest robot = new HardwareTest();
-
-
+    GyroSensor gyro;
     public void runOpMode(){
 
 
@@ -22,12 +27,14 @@ public class pidController extends LinearOpMode {
         telemetry.addData(">", "Wait for Start");
         telemetry.update();
         waitForStart();
+        pidTurnLoop(90);
 
 
     }
 
-    public void pidTurnLoop(double target, double turnPower){
+    public void pidTurnLoop(double target){
 
+        double turnPower = 0;
 
         double current = 0;
         double error = target-current;
@@ -46,9 +53,9 @@ public class pidController extends LinearOpMode {
 
 
         while(Math.abs(error) >= 1){
-            current = gyro.firstAngle;
+            current = getCurrentAngle();              // Gets the angle that the robot is currently at
             error = Math.abs(target - current);
-            proportional = error*kP;
+            proportional = error * kP;
             integral += error * ((System.currentTimeMillis()/1000)-prevTime) * kI;
             derivative = (error - prevError) / ((System.currentTimeMillis()/1000) - prevTime) * kD;
             turnPower = proportional + integral + derivative;
@@ -66,5 +73,13 @@ public class pidController extends LinearOpMode {
             robot.rightFrontMotor.setPower(turnPower);
             robot.rightBackMotor.setPower(turnPower);
         }
+    }
+
+
+    public double getCurrentAngle(){
+        double currentAngle = 0;
+        gyro = hardwareMap.gyroSensor.get("gyro");
+        currentAngle = gyro.getHeading();
+        return currentAngle;
     }
 }
