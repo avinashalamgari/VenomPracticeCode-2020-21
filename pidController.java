@@ -50,6 +50,7 @@ public class pidController extends LinearOpMode {
         double kI = 0.012;
         double kD = 0.02/90;
 
+        robot.gyro.calibrate();
 
         while(Math.abs(error) >= 1){
             current = getCurrentAngle();              // Gets the angle that the robot is currently at
@@ -58,6 +59,8 @@ public class pidController extends LinearOpMode {
             integral += error * ((System.currentTimeMillis()/1000)-prevTime) * kI;
             derivative = (error - prevError) / ((System.currentTimeMillis()/1000) - prevTime) * kD;
             turnPower = proportional + integral + derivative;
+
+            robot.gyro.calibrate();
         }
             robot.leftBackMotor.setPower(turnPower);
             robot.leftFrontMotor.setPower(turnPower);
