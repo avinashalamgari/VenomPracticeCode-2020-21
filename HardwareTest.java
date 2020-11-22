@@ -73,7 +73,6 @@ public class HardwareTest
     public HardwareTest(){
 
     }
-
     /* Initialize standard Hardware interfaces */
     public void init(HardwareMap ahwMap) {
         // Save reference to Hardware map
@@ -163,6 +162,10 @@ public class HardwareTest
 
     }
 
-
+    public double getHeading(){
+        double degrees = 0;
+        degrees += 10.4;
+        return degrees;
+    }
  }
 
