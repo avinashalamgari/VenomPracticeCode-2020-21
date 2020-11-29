@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode;
 
-        import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-        import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-        import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name = "Prototype Regular TeleOp", group = "Teleop")
 public class VenomTeleopRegular extends OpMode {
@@ -18,7 +18,7 @@ public class VenomTeleopRegular extends OpMode {
         robot.rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         robot.rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
 
-        robot.leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+        robot.rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         robot.leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
     }
 
@@ -38,9 +38,9 @@ public class VenomTeleopRegular extends OpMode {
 
 
         robot.leftFrontMotor.setPower(drivePower);
-        robot.leftBackMotor.setPower(drivePower);
+        robot.leftBackMotor.setPower(-drivePower);
         robot.rightFrontMotor.setPower(drivePower);
-        robot.rightBackMotor.setPower(drivePower);
+        robot.rightBackMotor.setPower(-drivePower);
     }
     // The method that turns the robot when the user wants the robot to turn
     // Is based off of the input that is inputted on the controller.
@@ -50,15 +50,16 @@ public class VenomTeleopRegular extends OpMode {
         telemetry.addData("Turn Power", turnPower);
 
         if(turnPower > 0.5) {
-            robot.leftFrontMotor.setPower(turnPower);
-            robot.leftBackMotor.setPower(turnPower);
-            robot.rightFrontMotor.setPower(-turnPower);
-            robot.rightBackMotor.setPower(-turnPower);
-        } else {
             robot.leftFrontMotor.setPower(-turnPower);
-            robot.leftBackMotor.setPower(-turnPower);
+            robot.leftBackMotor.setPower(turnPower);
             robot.rightFrontMotor.setPower(turnPower);
-            robot.rightBackMotor.setPower(turnPower);
+            robot.rightBackMotor.setPower(-turnPower);
+        }
+        if(turnPower < -0.5) {
+            robot.leftFrontMotor.setPower(-turnPower);
+            robot.leftBackMotor.setPower(turnPower);
+            robot.rightFrontMotor.setPower(turnPower);
+            robot.rightBackMotor.setPower(-turnPower);
         }
 
     }
@@ -66,20 +67,21 @@ public class VenomTeleopRegular extends OpMode {
     public void doStrafe(){
         double strafePower = gamepad1.left_stick_x;
 
-        telemetry.addData("Strafe Power", strafePower);
-        if(strafePower > 0.5){
-            robot.leftFrontMotor.setPower(strafePower);
-            robot.rightFrontMotor.setPower(strafePower);
-            robot.rightBackMotor.setPower(-strafePower);
-            robot.leftBackMotor.setPower(-strafePower);
-        }
-        if(strafePower < 0.5){
-            robot.leftFrontMotor.setPower(-strafePower);
-            robot.rightFrontMotor.setPower(-strafePower);
-            robot.rightBackMotor.setPower(strafePower);
-            robot.leftBackMotor.setPower(strafePower);
-        }
+        telemetry.addData("strafe Power", strafePower);
 
+        if(strafePower > 0.5) {
+            robot.leftFrontMotor.setPower(-strafePower);
+            robot.leftBackMotor.setPower(-strafePower);
+            robot.rightFrontMotor.setPower(strafePower);
+            robot.rightBackMotor.setPower(strafePower);
+        }
+        if(strafePower < -0.5) {
+            robot.leftFrontMotor.setPower(-strafePower);
+            robot.leftBackMotor.setPower(-strafePower);
+            robot.rightFrontMotor.setPower(strafePower);
+            robot.rightBackMotor.setPower(strafePower);
+        }
     }
+
 
 }

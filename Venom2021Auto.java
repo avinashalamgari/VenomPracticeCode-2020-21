@@ -66,11 +66,32 @@ public class Venom2021Auto extends LinearOpMode {
             robot.rightFrontMotor.setPower(-turnPower);
             robot.rightBackMotor.setPower(-turnPower);
 
+            telemetry.addData("Turn Power", turnPower);
     }
-
     public double getCurrentAngle(){
         Orientation angles = imu.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         imu.imu.getPosition();
         return angles.firstAngle;
+    }
+
+    public void goForward(double timeInSeconds){
+        double drivePower = 0;
+        double currentTime = 0;
+        while(currentTime < timeInSeconds){
+            drivePower = 1.0;
+            robot.leftBackMotor.setPower(drivePower);
+            robot.leftFrontMotor.setPower(drivePower);
+            robot.rightFrontMotor.setPower(drivePower);
+            robot.rightBackMotor.setPower(drivePower);
+            telemetry.addData("Current Time", currentTime);
+            currentTime += System.currentTimeMillis()/1000;
+        }
+        drivePower = 0;
+        robot.leftBackMotor.setPower(drivePower);
+        robot.leftFrontMotor.setPower(drivePower);
+        robot.rightFrontMotor.setPower(drivePower);
+        robot.rightBackMotor.setPower(drivePower);
+
+
     }
 }
