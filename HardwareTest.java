@@ -59,6 +59,19 @@ public class HardwareTest
     public DcMotor rightBackMotor;
     public DcMotor leftFrontMotor;
     public DcMotor rightFrontMotor;
+    public DcMotor shooter;
+    public DcMotor intake;
+    public DcMotor transitionBeltLeft;
+    public DcMotor transitionBeltRight;
+
+    public Servo vertical;
+    public final static double VERTICAL_HOME = 0.0;
+    public final static double VERTICAL_MIN_RANGE = 0.0;
+    public final static double VERTICAL_MAX_RANGE = 0.5;
+
+
+
+
     public GyroSensor gyro;
 
     public static final double MID_SERVO       =  0.5 ;
@@ -85,6 +98,16 @@ public class HardwareTest
         leftFrontMotor = hwMap.get(DcMotor.class, "leftFrontDrive");
         rightBackMotor = hwMap.get(DcMotor.class, "rightBackDrive");
         rightFrontMotor = hwMap.get(DcMotor.class, "rightFrontDrive");
+        shooter = hwMap.get(DcMotor.class, "shooter");
+        intake = hwMap.get(DcMotor.class, "intake");
+        transitionBeltLeft = hwMap.get(DcMotor.class, "transitionBeltLeft");
+        transitionBeltRight = hwMap.get(DcMotor.class, "transitionBeltRight");
+
+        vertical = hwMap.get(Servo.class,  "verticalservo");
+        vertical.setPosition(VERTICAL_HOME);
+
+
+
         //leftArm    = hwMap.get(DcMotor.class, "left_arm");
         leftBackMotor.setDirection(DcMotor.Direction.FORWARD); // Set to REVERSE if using AndyMark motors
         leftFrontMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -105,7 +128,7 @@ public class HardwareTest
         rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-       // leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // leftArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 //        // Define and initialize ALL installed servos.
         Servo leftClaw  = hwMap.get(Servo.class, "left_hand");
@@ -113,59 +136,5 @@ public class HardwareTest
 //        leftClaw.setPosition(MID_SERVO);
 //        rightClaw.setPosition(MID_SERVO);
     }
-
-//    public void turn(double turnPower, double target){
-//
-//
-//        double current = 0;
-//        double error = target-current;
-//        double prevError = 0;
-//
-//        double proportional;
-//        double integral = 0;
-//        double derivative = 0;
-//
-//        double prevTime = 0;
-//
-//
-//        double kP = 0.6/90;
-//        double kI = 0.012;
-//        double kD = 0.02/90;
-//
-//
-//        while(Math.abs(error) >= 1){
-//            //current = gyro.getHeader();            //fix error (no gryo method exists)
-//            error = Math.abs(target - current);
-//            proportional = error*kP;
-//            integral += error * ((System.currentTimeMillis()/1000)-prevTime) * kI;
-//            derivative = (error - prevError) / ((System.currentTimeMillis()/1000) - prevTime) * kD;
-//            turnPower = proportional + integral + derivative;
-//        }
-//
-//            leftBackMotor.setPower(turnPower);
-//            leftFrontMotor.setPower(turnPower);
-//            rightFrontMotor.setPower(-turnPower);
-//            rightBackMotor.setPower(-turnPower);
-//    }
-
-    public void doDrive( double inches, double power){
-
-//        while(ElapsedTime.MILLIS_IN_NANO < time){
-//            leftBackMotor.setPower(power);
-//            leftFrontMotor.setPower(power);
-//            rightFrontMotor.setPower(power);
-//            rightBackMotor.setPower(power);
-//        }
-
-        double calculatedInches;
-
-
-    }
-
-    public double getHeading(){
-        double degrees = 0;
-        degrees += 10.4;
-        return degrees;
-    }
- }
+}
 

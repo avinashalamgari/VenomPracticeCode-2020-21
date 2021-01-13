@@ -3,11 +3,14 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name = "Prototype Regular TeleOp", group = "Teleop")
 public class VenomTeleopRegular extends OpMode {
 
     HardwareTest robot = new HardwareTest();
+    double verticalArmPosition = robot.VERTICAL_HOME;
+    final double VERTICAL_ARM_SPEED = 0.01;
 
 
     // Initializing all of the motors
@@ -17,6 +20,14 @@ public class VenomTeleopRegular extends OpMode {
         robot.leftBackMotor = hardwareMap.dcMotor.get("leftBackMotor");
         robot.rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         robot.rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
+
+        robot.transitionBeltLeft = hardwareMap.dcMotor.get("transitionBeltLeft");
+        robot.transitionBeltRight = hardwareMap.dcMotor.get("transitionBeltRight");
+
+        robot.shooter = hardwareMap.dcMotor.get("shooter");
+        robot.intake = hardwareMap.dcMotor.get("intake");
+
+
 
         robot.rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         robot.leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -28,7 +39,9 @@ public class VenomTeleopRegular extends OpMode {
         doDrive();
         doTurn();
         doStrafe();
-
+        shootRing();
+        intake();
+        conveyerBelt();
     }
 
     //The method that sets the poer to what the user inputted.
@@ -41,6 +54,7 @@ public class VenomTeleopRegular extends OpMode {
         robot.leftBackMotor.setPower(-drivePower);
         robot.rightFrontMotor.setPower(drivePower);
         robot.rightBackMotor.setPower(-drivePower);
+
     }
     // The method that turns the robot when the user wants the robot to turn
     // Is based off of the input that is inputted on the controller.
@@ -83,5 +97,42 @@ public class VenomTeleopRegular extends OpMode {
         }
     }
 
+    public void shootRing(){
+        double shootPower = 1;
+        telemetry.addData("shoot power", shootPower);
+        if(gamepad1.right_trigger > 0.2){
+            robot.shooter.setPower(shootPower);
+        } else{
+            robot.shooter.setPower(0);
+        }
+    }
+
+    public void intake(){
+        double intakePower = gamepad1.left_trigger;
+        telemetry.addData("Intake power", intakePower);
+        robot.intake.setPower(-intakePower);
+    }
+    public void conveyerBelt(){
+        boolean yPressed = false;
+        if(gamepad1.y){
+            robot.transitionBeltLeft.setPower(1);
+            robot.transitionBeltRight.setPower(-1);
+        } else{
+            robot.transitionBeltLeft.setPower(0);
+            robot.transitionBeltRight.setPower(0);
+        }
+    }
+    public void servoVertical(){
+        if(gamepad1.dpad_up){
+            verticalArmPosition += VERTICAL_ARM_SPEED;
+        } else if (gamepad1.dpad_down){
+            verticalArmPosition -= VERTICAL_ARM_SPEED;
+        }
+
+        verticalArmPosition = Range.clip(verticalArmPosition, robot.VERTICAL_MIN_RANGE, robot.VERTICAL_MAX_RANGE);
+
+        robot.vertical.setPosition(verticalArmPosition);
+        telemetry.addData("vertical arm position", verticalArmPosition);
+    }
 
 }
