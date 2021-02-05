@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -64,10 +65,11 @@ public class HardwareTest
     public DcMotor transitionBeltLeft;
     public DcMotor transitionBeltRight;
 
-    public Servo vertical;
-    public final static double VERTICAL_HOME = 0.0;
-    public final static double VERTICAL_MIN_RANGE = 0.0;
-    public final static double VERTICAL_MAX_RANGE = 0.5;
+    public CRServo vertical;
+    public Servo horizontal;
+    public final static double HORIZONTAL_HOME = 0.0;
+    public final static double HORIZONTAL_MIN_RANGE = 0.0;
+    public final static double HORIZONTAL_MAX_RANGE = 0.5;
 
 
 
@@ -103,9 +105,10 @@ public class HardwareTest
         transitionBeltLeft = hwMap.get(DcMotor.class, "transitionBeltLeft");
         transitionBeltRight = hwMap.get(DcMotor.class, "transitionBeltRight");
 
-        vertical = hwMap.get(Servo.class,  "verticalservo");
-        vertical.setPosition(VERTICAL_HOME);
+        vertical = hwMap.get(CRServo.class,  "verticalservo");
 
+        horizontal = hwMap.get(Servo.class, "servo2");
+        horizontal.setPosition(HORIZONTAL_HOME);
 
 
         //leftArm    = hwMap.get(DcMotor.class, "left_arm");

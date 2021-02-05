@@ -9,8 +9,9 @@ import com.qualcomm.robotcore.util.Range;
 public class VenomTeleopRegular extends OpMode {
 
     HardwareTest robot = new HardwareTest();
-    double verticalArmPosition = robot.VERTICAL_HOME;
-    final double VERTICAL_ARM_SPEED = 0.01;
+
+    double horizontalPosition = robot.HORIZONTAL_HOME;
+    final double HORIZONTAL_ARM_SPEED = 0.01;
 
 
     // Initializing all of the motors
@@ -27,7 +28,8 @@ public class VenomTeleopRegular extends OpMode {
         robot.shooter = hardwareMap.dcMotor.get("shooter");
         robot.intake = hardwareMap.dcMotor.get("intake");
 
-
+        robot.vertical = hardwareMap.crservo.get("servo");
+        robot.horizontal = hardwareMap.servo.get("servo2");
 
         robot.rightFrontMotor.setDirection(DcMotor.Direction.REVERSE);
         robot.leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
@@ -42,6 +44,8 @@ public class VenomTeleopRegular extends OpMode {
         shootRing();
         intake();
         conveyerBelt();
+        servoVertical();
+        servoHorizontal();
     }
 
     //The method that sets the poer to what the user inputted.
@@ -69,7 +73,7 @@ public class VenomTeleopRegular extends OpMode {
             robot.rightFrontMotor.setPower(turnPower);
             robot.rightBackMotor.setPower(-turnPower);
         }
-        if(turnPower < -0.5) {
+        else if(turnPower < -0.5) {
             robot.leftFrontMotor.setPower(-turnPower);
             robot.leftBackMotor.setPower(turnPower);
             robot.rightFrontMotor.setPower(turnPower);
@@ -109,8 +113,16 @@ public class VenomTeleopRegular extends OpMode {
 
     public void intake(){
         double intakePower = gamepad1.left_trigger;
+        boolean xPressed = gamepad1.x;
         telemetry.addData("Intake power", intakePower);
-        robot.intake.setPower(-intakePower);
+        if(intakePower > 0.2 && xPressed == false) {
+            robot.intake.setPower(-1);
+        } else if(intakePower > 0.2 && xPressed == true){
+            robot.intake.setPower(-0.5);
+        }
+        else{
+            robot.intake.setPower(0);
+        }
     }
     public void conveyerBelt(){
         boolean yPressed = false;
@@ -123,16 +135,29 @@ public class VenomTeleopRegular extends OpMode {
         }
     }
     public void servoVertical(){
+        robot.vertical.setPower(0);
         if(gamepad1.dpad_up){
-            verticalArmPosition += VERTICAL_ARM_SPEED;
+            robot.vertical.setPower(1);
         } else if (gamepad1.dpad_down){
-            verticalArmPosition -= VERTICAL_ARM_SPEED;
+            robot.vertical.setPower(-1);
         }
 
-        verticalArmPosition = Range.clip(verticalArmPosition, robot.VERTICAL_MIN_RANGE, robot.VERTICAL_MAX_RANGE);
 
-        robot.vertical.setPosition(verticalArmPosition);
-        telemetry.addData("vertical arm position", verticalArmPosition);
+        //telemetry.addData("vertical arm position",);
+    }
+
+    public void servoHorizontal(){
+
+        if(gamepad1.dpad_left){
+            horizontalPosition += HORIZONTAL_ARM_SPEED;
+        } else if(gamepad1.dpad_right){
+            horizontalPosition -= horizontalPosition;
+        }
+
+        horizontalPosition = Range.clip(horizontalPosition, robot.HORIZONTAL_MIN_RANGE, robot.HORIZONTAL_MAX_RANGE);
+
+        robot.horizontal.setPosition(horizontalPosition);
+
     }
 
 }

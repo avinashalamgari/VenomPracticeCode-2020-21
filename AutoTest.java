@@ -110,7 +110,7 @@ public class AutoTest extends LinearOpMode {
         Thread.sleep(500);
 
         turn(true);
-        Thread.sleep(50);
+        Thread.sleep(25);
 
 //        strafe(true);
 //
@@ -129,10 +129,22 @@ public class AutoTest extends LinearOpMode {
         shoot();
         Thread.sleep(3000);
 
+
+        shooter.setPower(0);
         leftBackMotor.setPower(0);
         leftFrontMotor.setPower(0);
         rightBackMotor.setPower(0);
         rightFrontMotor.setPower(0);
+
+        forward();
+        Thread.sleep(200);
+
+        shooter.setPower(0);
+        leftBackMotor.setPower(0);
+        leftFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
+
         }
 
 
@@ -205,6 +217,9 @@ public class AutoTest extends LinearOpMode {
         conveyerBeltLeft.setPower(1);
 
         Thread.sleep(100);
+
+        conveyerBeltRight.setPower(0);
+        conveyerBeltLeft.setPower(0);
 
     }
 }
