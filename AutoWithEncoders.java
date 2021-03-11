@@ -28,8 +28,14 @@ public class AutoWithEncoders extends LinearOpMode {
     Orientation angles;
     private double ticksPerRev = 383.6;
 
+    ConceptTensorFlowObjectDetectionWebcam od = new ConceptTensorFlowObjectDetectionWebcam();
+
+
     @Override
     public void runOpMode() throws InterruptedException{
+        od.runOpMode();
+        telemetry.addData("Done", "Done");
+
         leftBackMotor  = hardwareMap.get(DcMotor.class, "leftBackMotor");
         leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
@@ -63,42 +69,51 @@ public class AutoWithEncoders extends LinearOpMode {
 
         telemetry.addData("distance Method", distance(12));
         telemetry.update();
-        driveForwardDistance(0.5, distance(60));
+        //driveForwardDistance(0.5, distance(60));
+
+        //goToSquareC(1);
+        telemetry.addData("Label",od.label);
+        telemetry.update();
+        wait(1000);
+        goToSquareA(1);
 
 
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //goToSquareB(1);
+//
+//
+//        rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//
+//        Thread.sleep(1000);
+//        turn(true);
+//        Thread.sleep(75);
+//        leftFrontMotor.setPower(0);
+//        leftBackMotor.setPower(0);
+//        rightFrontMotor.setPower(0);
+//        rightBackMotor.setPower(0);
+//
+//        Thread.sleep(1000);
+//
+//        shooter.setPower(1);
+//        Thread.sleep(5000);
+//
+//        shoot();
+//        Thread.sleep(3000);
+//
+//
+//        shooter.setPower(0);
+//
+//        stopDriving();
+//
+//        forward(0.5);
+//        Thread.sleep(500);
+//
+//        stopDriving();
 
-        Thread.sleep(1000);
-        turn(true);
-        Thread.sleep(75);
-        leftFrontMotor.setPower(0);
-        leftBackMotor.setPower(0);
-        rightFrontMotor.setPower(0);
-        rightBackMotor.setPower(0);
 
-        Thread.sleep(1000);
-
-        shooter.setPower(1);
-        Thread.sleep(5000);
-
-        shoot();
-        Thread.sleep(3000);
-
-
-        shooter.setPower(0);
-
-        stopDriving();
-
-        forward(0.5);
-        Thread.sleep(500);
-
-        stopDriving();
-
-
-        }
+    }
 
 
 
@@ -115,7 +130,7 @@ public class AutoWithEncoders extends LinearOpMode {
         return (int)target;
     }
 
-//    public void strafe(boolean right){
+    //    public void strafe(boolean right){
 //        if(right){
 //            leftFrontMotor.setPower(-0.5);
 //            leftBackMotor.setPower(-0.5);
@@ -146,7 +161,7 @@ public class AutoWithEncoders extends LinearOpMode {
             rightBackMotor.setPower(-0.5);
         }
     }
-//
+    //
     public void shoot() throws InterruptedException {
         conveyerBeltRight.setPower(-1);
         conveyerBeltLeft.setPower(1);
@@ -215,6 +230,82 @@ public class AutoWithEncoders extends LinearOpMode {
 //        rightFrontMotor.setPower(turnPower);
 //    }
 
+    public void goToSquareA(double power){
+        if(od.label.equals("ZERO")) {
+            rightFrontMotor.setTargetPosition(-72);
+            rightBackMotor.setTargetPosition(72);
+            leftBackMotor.setTargetPosition(72);
+            leftFrontMotor.setTargetPosition(-72);
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            forward(power);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+
+            stopDriving();
+        }
+    }
+
+    public void goToSquareB(double power){
+
+        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+        if(od.label.equals("SINGLE")) {
+            rightFrontMotor.setTargetPosition(-distance(96));
+            rightBackMotor.setTargetPosition(distance(96));
+            leftBackMotor.setTargetPosition(distance(96));
+            leftFrontMotor.setTargetPosition(-distance(96));
+
+            rightFrontMotor.setTargetPosition(-distance(24));
+            rightBackMotor.setTargetPosition(-distance(24));
+            leftBackMotor.setTargetPosition(distance(24));
+            leftFrontMotor.setTargetPosition(distance(24));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            forward(power);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+
+            stopDriving();
+        }
+    }
+
+    public void goToSquareC(double power){
+        if(od.label.equals("QUAD")) {
+            rightFrontMotor.setTargetPosition(-120);
+            rightBackMotor.setTargetPosition(120);
+            leftBackMotor.setTargetPosition(120);
+            leftFrontMotor.setTargetPosition(-120);
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            forward(power);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+
+            stopDriving();
+        }
+    }
 
     public void stopDriving(){
         forward(0);

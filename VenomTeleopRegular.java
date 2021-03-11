@@ -22,6 +22,11 @@ public class VenomTeleopRegular extends OpMode {
         robot.rightFrontMotor = hardwareMap.dcMotor.get("rightFrontMotor");
         robot.rightBackMotor = hardwareMap.dcMotor.get("rightBackMotor");
 
+        robot.leftFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.leftBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightBackMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        robot.rightFrontMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         robot.transitionBeltLeft = hardwareMap.dcMotor.get("transitionBeltLeft");
         robot.transitionBeltRight = hardwareMap.dcMotor.get("transitionBeltRight");
 
@@ -136,9 +141,9 @@ public class VenomTeleopRegular extends OpMode {
     }
     public void servoVertical(){
         robot.vertical.setPower(0);
-        if(gamepad1.dpad_up){
+        if(gamepad2.dpad_down){
             robot.vertical.setPower(1);
-        } else if (gamepad1.dpad_down){
+        } else if (gamepad2.dpad_up){
             robot.vertical.setPower(-1);
         }
 
@@ -148,9 +153,9 @@ public class VenomTeleopRegular extends OpMode {
 
     public void servoHorizontal(){
 
-        if(gamepad1.dpad_left){
+        if(gamepad2.dpad_right){
             horizontalPosition += HORIZONTAL_ARM_SPEED;
-        } else if(gamepad1.dpad_right){
+        } else if(gamepad2.dpad_left){
             horizontalPosition -= horizontalPosition;
         }
 

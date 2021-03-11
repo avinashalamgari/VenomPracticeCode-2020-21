@@ -29,21 +29,14 @@
 
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -61,38 +54,11 @@ import java.util.List;
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
  * is explained below.
  */
-@Autonomous(name = "Concept: TensorFlow Object Detection Webcam", group = "Concept")
-
-public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
+@Autonomous(name = "FinalAuto", group = "Concept")
+public class FInalAutoClass extends LinearOpMode {
     private static final String TFOD_MODEL_ASSET = "UltimateGoal.tflite";
     private static final String LABEL_FIRST_ELEMENT = "Quad";
     private static final String LABEL_SECOND_ELEMENT = "Single";
-
-    HardwareTest robot = new HardwareTest();
-    double horizontalPosition = robot.HORIZONTAL_HOME;
-    final double HORIZONTAL_ARM_SPEED = 0.01;
-
-    DcMotor leftBackMotor;
-    DcMotor leftFrontMotor;
-    DcMotor rightBackMotor;
-    DcMotor rightFrontMotor;
-    DcMotor shooter;
-    DcMotor conveyerBeltLeft;
-    DcMotor conveyerBeltRight;
-
-    Servo horizontal;
-    CRServo vertical;
-
-    BNO055IMU imu;
-    Orientation             lastAngles = new Orientation();
-    double                  globalAngle, power = .30, correction;
-
-    Orientation angles;
-    private double ticksPerRev = 383.6;
-
-
-
-    public String label = "";
 
     /*
      * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
@@ -121,29 +87,31 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
      */
     private TFObjectDetector tfod;
 
+
+
+    DcMotor leftBackMotor;
+    DcMotor leftFrontMotor;
+    DcMotor rightBackMotor;
+    DcMotor rightFrontMotor;
+    DcMotor shooter;
+    DcMotor conveyerBeltLeft;
+    DcMotor conveyerBeltRight;
+
+    Servo horizontal;
+    CRServo vertical;
+
+
+    Orientation angles;
+    private double ticksPerRev = 383.6;
+
+    HardwareTest robot = new HardwareTest();
+
+    public String label = "";
+
     @Override
     public void runOpMode() throws InterruptedException {
         // The TFObjectDetector uses the camera frames from the VuforiaLocalizer, so we create that
         // first.
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.mode                = BNO055IMU.SensorMode.IMU;
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.loggingEnabled      = false;
-        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
-        //parameters.calibrationDataFile = "BNO055IMUCalibration.json";
-
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
-
-        while (!isStopRequested() && !imu.isGyroCalibrated())
-        {
-            sleep(50);
-            idle();
-        }
-        telemetry.addData("imu calib status", imu.getCalibrationStatus().toString());
-        telemetry.update();
-
         initVuforia();
         initTfod();
 
@@ -164,8 +132,33 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             // Uncomment the following line if you want to adjust the magnification and/or the aspect ratio of the input images.
             //tfod.setZoom(2.5, 1.78);
         }
+        if (!opModeIsActive()) {
+            leftBackMotor  = hardwareMap.get(DcMotor.class, "leftBackMotor");
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightBackMotor = hardwareMap.get(DcMotor.class, "rightBackMotor");
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            rightFrontMotor = hardwareMap.get(DcMotor.class, "rightFrontMotor");
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            conveyerBeltLeft = hardwareMap.get(DcMotor.class, "transitionBeltLeft");
+            conveyerBeltRight = hardwareMap.get(DcMotor.class, "transitionBeltRight");
+            shooter = hardwareMap.get(DcMotor.class, "shooter");
+            vertical = hardwareMap.crservo.get("servo");
+            horizontal = hardwareMap.servo.get("servo2");
 
-            if (!opModeIsActive()) {
+            horizontal.setPosition(robot.HORIZONTAL_HOME);
+
+
+            leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
+            leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
+
+            leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+
             while (!opModeIsActive()) {
                 if (tfod != null) {
                     // getUpdatedRecognitions() will return null if no new information is available since
@@ -193,51 +186,21 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
 
 
-
         /** Wait for the game to begin */
         telemetry.addData(">", "Press Play to start op mode");
         telemetry.update();
         waitForStart();
 
-//        if (opModeIsActive()) {
-//            while (opModeIsActive()) {
-//                if (tfod != null) {
-//                    // getUpdatedRecognitions() will return null if no new information is available since
-//                    // the last time that call was made.
-//                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-////                    label = updatedRecognitions.get(updatedRecognitions.size()).getLabel();
-//                    if (updatedRecognitions != null) {
-//                        telemetry.addData("# Object Detected", updatedRecognitions.size());
-//                        // step through the list of recognitions and display boundary info.
-//                        int i = 0;
-//                        for (Recognition recognition : updatedRecognitions) {
-//                            telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-//                            label = recognition.getLabel();
-//                            telemetry.addData("Label variable", label);
-//                            telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-//                                    recognition.getLeft(), recognition.getTop());
-//                            telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-//                                    recognition.getRight(), recognition.getBottom());
-//                        }
-//                        telemetry.update();
-//                    }
-//                }
-//            }
-//        }
-
-        while(opModeIsActive()){
-            telemetry.addData("Label variable", label);
-            runCode();
-
-            horizontal.setPosition(0);
+        while (opModeIsActive()){
+            gotoSquareA(0.7);
+            gotoSquareB(0.5);
+            gotoSquareC(0.5);
             stop();
         }
 
         if (tfod != null) {
             tfod.shutdown();
         }
-
-
     }
 
     /**
@@ -265,10 +228,11 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
         int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
             "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-       tfodParameters.minResultConfidence = 0.45f;
+       tfodParameters.minResultConfidence = 0.8f;
        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABEL_FIRST_ELEMENT, LABEL_SECOND_ELEMENT);
     }
+
     public int distance(double inches) {
         double diameter = 3.93701;                                // In Inches
         double circumference = (Math.PI)*(diameter);
@@ -280,71 +244,6 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
          */
         return (int)target;
     }
-
-    //    public void strafe(boolean right){
-//        if(right){
-//            leftFrontMotor.setPower(-0.5);
-//            leftBackMotor.setPower(-0.5);
-//            rightFrontMotor.setPower(0.5);
-//            rightBackMotor.setPower(0.5);
-//        }
-//    }
-//
-//    public void forward(){
-//        leftFrontMotor.setPower(-0.8);
-//        leftBackMotor.setPower(0.8);
-//        rightFrontMotor.setPower(-0.8);
-//        rightBackMotor.setPower(0.8);
-//    }
-//
-//    public void backwards(){
-//        leftFrontMotor.setPower(0.5);
-//        leftBackMotor.setPower(-0.5);
-//        rightFrontMotor.setPower(0.5);
-//        rightBackMotor.setPower(-0.5);
-//    }
-//
-    public void turn(boolean right, double power){
-        if(right){
-            leftFrontMotor.setPower(-power);
-            leftBackMotor.setPower(power);
-            rightFrontMotor.setPower(power);
-            rightBackMotor.setPower(-power);
-        }
-    }
-    //
-    public void shoot() throws InterruptedException {
-        conveyerBeltRight.setPower(-1);
-        conveyerBeltLeft.setPower(1);
-
-        Thread.sleep(50);
-
-        conveyerBeltRight.setPower(0);
-        conveyerBeltLeft.setPower(0);
-        Thread.sleep(800);
-
-        conveyerBeltRight.setPower(-1);
-        conveyerBeltLeft.setPower(1);
-
-        Thread.sleep(50);
-
-
-
-        conveyerBeltRight.setPower(0);
-        conveyerBeltLeft.setPower(0);
-        Thread.sleep(500);
-
-
-        conveyerBeltRight.setPower(-1);
-        conveyerBeltLeft.setPower(1);
-
-        Thread.sleep(50);
-
-        conveyerBeltRight.setPower(0);
-        conveyerBeltLeft.setPower(0);
-
-
-    }
     public void forward(double power){
         leftBackMotor.setPower(power);
         leftFrontMotor.setPower(power);
@@ -354,42 +253,33 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
     public void backward(double power){
         leftBackMotor.setPower(-power);
+        leftFrontMotor.setPower(-power);
+        rightBackMotor.setPower(-power);
+        rightFrontMotor.setPower(-power);
+    }
+
+    public void turn(double power){
+        leftBackMotor.setPower(power);
         leftFrontMotor.setPower(power);
         rightBackMotor.setPower(-power);
-        rightFrontMotor.setPower(power);
+        rightFrontMotor.setPower(-power);
     }
 
-    public void driveForwardDistance(double power, int distance){
-
-
-        rightFrontMotor.setTargetPosition(-distance);
-        rightBackMotor.setTargetPosition(distance);
-        leftFrontMotor.setTargetPosition(-distance);
-        leftBackMotor.setTargetPosition(distance);
-
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        forward(power);
-
-        while(leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()){
-
-        }
-
-        stopDriving();
+    public void stopDriving(){
+        leftBackMotor.setPower(0);
+        leftFrontMotor.setPower(0);
+        rightBackMotor.setPower(0);
+        rightFrontMotor.setPower(0);
     }
 
-//    public void turn (double turnPower){
-//        leftBackMotor.setPower(turnPower);
-//        leftFrontMotor.setPower(-turnPower);
-//        rightBackMotor.setPower(-turnPower);
-//        rightFrontMotor.setPower(turnPower);
-//    }
+    public void strafe(double power){
+        leftBackMotor.setPower(-power);
+        leftFrontMotor.setPower(power);
+        rightBackMotor.setPower(power);
+        rightFrontMotor.setPower(-power);
+    }
 
-    public void goToSquareA(double power) throws InterruptedException {
-
+    public void gotoSquareA(double power) throws InterruptedException {
         rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
         rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
         leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
@@ -412,30 +302,29 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
             }
 
-            stopDriving();
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-//            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//
-//            rightFrontMotor.setTargetPosition(distance(48));
-//            rightBackMotor.setTargetPosition(-distance(48));
-//            leftBackMotor.setTargetPosition(distance(48));
-//            leftFrontMotor.setTargetPosition(-distance(48));
-//
-//
-//            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            turn(true, power);
-//
-//            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-//
-//            }
-            rotate(180, 0.1);
+
+            rightFrontMotor.setTargetPosition(-distance(43));
+            rightBackMotor.setTargetPosition(-distance(43));
+            leftBackMotor.setTargetPosition(distance(43));
+            leftFrontMotor.setTargetPosition(distance(43));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            turn(0.7);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+
+            stopDriving();
 
             vertical.setPower(-0.1);
             Thread.sleep(800);
@@ -443,22 +332,24 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
             horizontal.setPosition(0.5);
 
+
             rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-            rightFrontMotor.setTargetPosition(distance(48));
-            rightBackMotor.setTargetPosition(-distance(48));
-            leftBackMotor.setTargetPosition(distance(48));
-            leftFrontMotor.setTargetPosition(-distance(48));
+
+            rightFrontMotor.setTargetPosition(-distance(43));
+            rightBackMotor.setTargetPosition(-distance(43));
+            leftBackMotor.setTargetPosition(distance(43));
+            leftFrontMotor.setTargetPosition(distance(43));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            turn(true, power);
+            turn(0.7);
 
             while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
 
@@ -469,10 +360,10 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-            rightFrontMotor.setTargetPosition(distance(24));
-            rightBackMotor.setTargetPosition(-distance(24));
-            leftBackMotor.setTargetPosition(-distance(24));
-            leftFrontMotor.setTargetPosition(distance(24));
+            rightFrontMotor.setTargetPosition(-distance(10));
+            rightBackMotor.setTargetPosition(-distance(10));
+            leftBackMotor.setTargetPosition(-distance(10));
+            leftFrontMotor.setTargetPosition(-distance(10));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -485,47 +376,66 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
 
             }
 
-            stopDriving();
-
             rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-            Thread.sleep(500);
-
-            rightFrontMotor.setTargetPosition(distance(24));
-            rightBackMotor.setTargetPosition(-distance(24));
-            leftBackMotor.setTargetPosition(distance(24));
-            leftFrontMotor.setTargetPosition(-distance(24));
+            rightFrontMotor.setTargetPosition(-distance(24));
+            rightBackMotor.setTargetPosition(distance(24));
+            leftBackMotor.setTargetPosition(-distance(24));
+            leftFrontMotor.setTargetPosition(distance(24));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            turn(true, power);
+            strafe(0.1);
 
             while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
 
             }
 
-            stopDriving();
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+            rightFrontMotor.setTargetPosition(-distance(1.5));
+            rightBackMotor.setTargetPosition(-distance(1.5));
+            leftBackMotor.setTargetPosition(distance(1.5));
+            leftFrontMotor.setTargetPosition(distance(1.5));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            turn(0.3);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+
+            shoot();
+
         }
     }
 
-    public void goToSquareB(double power) throws InterruptedException {
-
-        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
+    public void gotoSquareB(double power) throws InterruptedException {
         if(label.equals("Single")) {
-            rightFrontMotor.setTargetPosition(-distance(96));
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+            rightFrontMotor.setTargetPosition(distance(96));
             rightBackMotor.setTargetPosition(distance(96));
             leftBackMotor.setTargetPosition(distance(96));
-            leftFrontMotor.setTargetPosition(-distance(96));
+            leftFrontMotor.setTargetPosition(distance(96));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -543,8 +453,127 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             vertical.setPower(-0.1);
             Thread.sleep(800);
             vertical.setPower(0);
+            horizontal.setPosition(0.5);
+
+
+            shoot();
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+            rightFrontMotor.setTargetPosition(-distance(24));
+            rightBackMotor.setTargetPosition(-distance(24));
+            leftBackMotor.setTargetPosition(-distance(24));
+            leftFrontMotor.setTargetPosition(-distance(24));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            backward(power);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+        }
+    }
+
+    public void gotoSquareC(double power) throws InterruptedException {
+        if(label.equals("Quad")){
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+            rightFrontMotor.setTargetPosition(distance(110));
+            rightBackMotor.setTargetPosition(distance(110));
+            leftBackMotor.setTargetPosition(distance(110));
+            leftFrontMotor.setTargetPosition(distance(110));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            forward(power);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+            rightFrontMotor.setTargetPosition(-distance(45));
+            rightBackMotor.setTargetPosition(-distance(45));
+            leftBackMotor.setTargetPosition(distance(45));
+            leftFrontMotor.setTargetPosition(distance(45));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            turn(0.3);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+
+            stopDriving();
+
+            vertical.setPower(-0.1);
+            Thread.sleep(800);
+            vertical.setPower(0);
 
             horizontal.setPosition(0.5);
+
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+            rightFrontMotor.setTargetPosition(-distance(45));
+            rightBackMotor.setTargetPosition(-distance(45));
+            leftBackMotor.setTargetPosition(distance(45));
+            leftFrontMotor.setTargetPosition(distance(45));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            turn(0.3);
+
+            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+            }
+            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+            rightFrontMotor.setTargetPosition(-distance(72));
+            rightBackMotor.setTargetPosition(-distance(72));
+            leftBackMotor.setTargetPosition(-distance(72));
+            leftFrontMotor.setTargetPosition(-distance(72));
+
+            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            backward(power);
+
+            shoot();
 
             rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
@@ -552,8 +581,8 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
             rightFrontMotor.setTargetPosition(distance(24));
-            rightBackMotor.setTargetPosition(-distance(24));
-            leftBackMotor.setTargetPosition(-distance(24));
+            rightBackMotor.setTargetPosition(distance(24));
+            leftBackMotor.setTargetPosition(distance(24));
             leftFrontMotor.setTargetPosition(distance(24));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -568,222 +597,113 @@ public class ConceptTensorFlowObjectDetectionWebcam extends LinearOpMode {
             }
 
             stopDriving();
-
-
-            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
-            Thread.sleep(500);
-
-            rightFrontMotor.setTargetPosition(distance(24));
-            rightBackMotor.setTargetPosition(-distance(24));
-            leftBackMotor.setTargetPosition(distance(24));
-            leftFrontMotor.setTargetPosition(-distance(24));
-
-            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            turn(true, power);
-
-            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-            }
-
-            stopDriving();
         }
     }
 
-    public void goToSquareC(double power) throws InterruptedException {
-        if(label.equals("Quad")) {
-            rightFrontMotor.setTargetPosition(-distance(120));
-            rightBackMotor.setTargetPosition(distance(120));
-            leftBackMotor.setTargetPosition(distance(120));
-            leftFrontMotor.setTargetPosition(-distance(120));
+    private void shoot() throws InterruptedException {
 
-            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        shooter.setPower(1);
+        Thread.sleep(3000);
 
-            forward(power);
+        conveyerBeltRight.setPower(-1);
+        conveyerBeltLeft.setPower(1);
 
-            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-            }
-
-            stopDriving();
-
-            vertical.setPower(-0.1);
-            Thread.sleep(800);
-            vertical.setPower(0);
-
-            horizontal.setPosition(0.5);
+        Thread.sleep(50);
 
 
-
-            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
-            Thread.sleep(500);
-
-            rightFrontMotor.setTargetPosition(distance(24));
-            rightBackMotor.setTargetPosition(-distance(24));
-            leftBackMotor.setTargetPosition(distance(24));
-            leftFrontMotor.setTargetPosition(-distance(24));
-
-            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            turn(true, power);
-
-            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-            }
-
-            stopDriving();
-        }
-    }
-
-    public void runCode() throws InterruptedException {
-
-
-        leftBackMotor  = hardwareMap.get(DcMotor.class, "leftBackMotor");
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftFrontMotor = hardwareMap.get(DcMotor.class, "leftFrontMotor");
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBackMotor = hardwareMap.get(DcMotor.class, "rightBackMotor");
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFrontMotor = hardwareMap.get(DcMotor.class, "rightFrontMotor");
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        conveyerBeltLeft = hardwareMap.get(DcMotor.class, "transitionBeltLeft");
-        conveyerBeltRight = hardwareMap.get(DcMotor.class, "transitionBeltRight");
-        shooter = hardwareMap.get(DcMotor.class, "shooter");
-        vertical = hardwareMap.crservo.get("servo");
-
-        horizontal = hardwareMap.servo.get("servo2");
-        horizontal.setPosition(robot.HORIZONTAL_HOME);
-
-
+        conveyerBeltRight.setPower(0);
+        conveyerBeltLeft.setPower(0);
+        Thread.sleep(800);
 
         rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
         rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
         leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
         leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-        leftBackMotor.setDirection(DcMotor.Direction.REVERSE);
-        leftFrontMotor.setDirection(DcMotor.Direction.REVERSE);
 
-        leftBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightBackMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftFrontMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightFrontMotor.setTargetPosition(-distance(2));
+        rightBackMotor.setTargetPosition(-distance(2));
+        leftBackMotor.setTargetPosition(distance(2));
+        leftFrontMotor.setTargetPosition(distance(2));
 
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        telemetry.addData("distance Method", distance(12));
-        telemetry.update();
-        //driveForwardDistance(0.5, distance(60));
+        turn(0.3);
 
-        //goToSquareC(1);
-        telemetry.addData("Label",label);
-        telemetry.update();
-        goToSquareA(0.5);
-        goToSquareB(0.5);
-        goToSquareC(0.5);
+        while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
+        }
 
         stopDriving();
-    }
 
-    public void stopDriving(){
-        leftFrontMotor.setPower(0);
-        leftBackMotor.setPower(0);
-        rightFrontMotor.setPower(0);
-        rightBackMotor.setPower(0);
-    }
+        conveyerBeltRight.setPower(-1);
+        conveyerBeltLeft.setPower(1);
 
-    private void rotate(int degrees, double power)
-    {
-        double  leftPower, rightPower;
+        Thread.sleep(50);
 
-        // restart imu movement tracking.
-        resetAngle();
 
-        // getAngle() returns + when rotating counter clockwise (left) and - when rotating
-        // clockwise (right).
 
-        if (degrees < 0)
-        {   // turn right.
-            leftPower = power;
-            rightPower = -power;
+        conveyerBeltRight.setPower(0);
+        conveyerBeltLeft.setPower(0);
+        Thread.sleep(500);
+
+        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+
+
+        rightFrontMotor.setTargetPosition(-distance(2));
+        rightBackMotor.setTargetPosition(-distance(2));
+        leftBackMotor.setTargetPosition(distance(2));
+        leftFrontMotor.setTargetPosition(distance(2));
+
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        turn(0.3);
+
+        while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+
         }
-        else if (degrees > 0)
-        {   // turn left.
-            leftPower = -power;
-            rightPower = power;
-        }
-        else return;
 
-        // set power to rotate.
-        leftFrontMotor.setPower(-leftPower);
-        leftBackMotor.setPower(leftPower);
-        rightFrontMotor.setPower(rightPower);
-        rightBackMotor.setPower(-rightPower);
-
-        // rotate until turn is completed.
-        if (degrees < 0)
-        {
-            // On right turn we have to get off zero first.
-            while (opModeIsActive() && getAngle() == 0) {}
-
-            while (opModeIsActive() && getAngle() > degrees) {}
-        }
-        else    // left turn.
-            while (opModeIsActive() && getAngle() < degrees) {}
-
-        // turn the motors off.
         stopDriving();
 
-        // wait for rotation to stop.
-        sleep(1000);
+        conveyerBeltRight.setPower(-1);
+        conveyerBeltLeft.setPower(1);
 
-        // reset angle tracking on new heading.
-        resetAngle();
-    }
+        Thread.sleep(50);
 
-    private void resetAngle()
-    {
-        lastAngles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        conveyerBeltRight.setPower(0);
+        conveyerBeltLeft.setPower(0);
 
-        globalAngle = 0;
-    }
+        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
+        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-    private double getAngle()
-    {
-        // We experimentally determined the Z axis is the axis we want to use for heading angle.
-        // We have to process the angle because the imu works in euler angles so the Z axis is
-        // returned as 0 to +180 or 0 to -180 rolling back to -179 or +179 when rotation passes
-        // 180 degrees. We detect this transition and track the total cumulative angle of rotation.
 
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        rightFrontMotor.setTargetPosition(distance(2));
+        rightBackMotor.setTargetPosition(distance(2));
+        leftBackMotor.setTargetPosition(-distance(2));
+        leftFrontMotor.setTargetPosition(-distance(2));
 
-        double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
+        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        if (deltaAngle < -180)
-            deltaAngle += 360;
-        else if (deltaAngle > 180)
-            deltaAngle -= 360;
+        turn(-0.3);
 
-        globalAngle += deltaAngle;
+        while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
 
-        lastAngles = angles;
+        }
 
-        return globalAngle;
+        stopDriving();
     }
 }
