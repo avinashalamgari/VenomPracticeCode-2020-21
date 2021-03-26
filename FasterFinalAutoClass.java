@@ -244,10 +244,6 @@ public class FasterFinalAutoClass extends LinearOpMode {
         double circumference = (Math.PI)*(diameter);
         double rotationsNeeded = inches/circumference;
         double target = rotationsNeeded * ticksPerRev;
-        /*
-         * Circumference = Distance traveled in 1 rotation
-         * 1440 encoder ticks is 1 rotation
-         */
         return (int)target;
     }
     public void forward(double power){
