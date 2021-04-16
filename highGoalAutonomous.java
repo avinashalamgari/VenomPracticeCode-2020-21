@@ -23,27 +23,18 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Rect;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
-import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name = "easyopencv", group = "auto")
-public class EasyOpenCVExample extends LinearOpMode
+@Autonomous(name = "highGoalAutonomous", group = "auto")
+public class highGoalAutonomous extends LinearOpMode
 {
     OpenCvCamera webcam;
     SkystoneDeterminationPipeline pipeline;
@@ -60,7 +51,6 @@ public class EasyOpenCVExample extends LinearOpMode
     CRServo vertical;
 
 
-    Orientation angles;
     private double ticksPerRev = 383.6;
 
     HardwareTest robot = new HardwareTest();
@@ -187,10 +177,10 @@ public class EasyOpenCVExample extends LinearOpMode
         leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
         if(pipeline.position == SkystoneDeterminationPipeline.RingPosition.NONE) {
-            rightFrontMotor.setTargetPosition(distance(60));
-            rightBackMotor.setTargetPosition(distance(60));
-            leftBackMotor.setTargetPosition(distance(60));
-            leftFrontMotor.setTargetPosition(distance(60));
+            rightFrontMotor.setTargetPosition(distance(56));
+            rightBackMotor.setTargetPosition(distance(56));
+            leftBackMotor.setTargetPosition(distance(56));
+            leftFrontMotor.setTargetPosition(distance(56));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -203,7 +193,26 @@ public class EasyOpenCVExample extends LinearOpMode
 
             }
 
+
+//            rightFrontMotor.setTargetPosition(-distance(5));
+//            rightBackMotor.setTargetPosition(-distance(5));
+//            leftBackMotor.setTargetPosition(distance(5));
+//            leftFrontMotor.setTargetPosition(distance(5));
+//
+//            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//            turn(0.7);
+//
+//            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
+//
+//            }
+//            stopDriving();
+
             stopDriving();
+
 
             rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
@@ -236,10 +245,10 @@ public class EasyOpenCVExample extends LinearOpMode
             leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-            rightFrontMotor.setTargetPosition(distance(12));
-            rightBackMotor.setTargetPosition(distance(12));
-            leftBackMotor.setTargetPosition(distance(12));
-            leftFrontMotor.setTargetPosition(distance(12));
+            rightFrontMotor.setTargetPosition(distance(18));
+            rightBackMotor.setTargetPosition(distance(18));
+            leftBackMotor.setTargetPosition(distance(18));
+            leftFrontMotor.setTargetPosition(distance(18));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -282,34 +291,10 @@ public class EasyOpenCVExample extends LinearOpMode
             leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
             leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-            rightFrontMotor.setTargetPosition(distance(-6));
-            rightBackMotor.setTargetPosition(distance(-6));
-            leftBackMotor.setTargetPosition(distance(-6));
-            leftFrontMotor.setTargetPosition(distance(-6));
-
-            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            forward(power);
-
-            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-            }
-
-            stopDriving();
-
-            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
-
-            rightFrontMotor.setTargetPosition(-distance(24));
-            rightBackMotor.setTargetPosition(distance(24));
-            leftBackMotor.setTargetPosition(-distance(24));
-            leftFrontMotor.setTargetPosition(distance(24));
+            rightFrontMotor.setTargetPosition(-distance(42));
+            rightBackMotor.setTargetPosition(distance(42));
+            leftBackMotor.setTargetPosition(-distance(42));
+            leftFrontMotor.setTargetPosition(distance(42));
 
             rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -331,6 +316,7 @@ public class EasyOpenCVExample extends LinearOpMode
 
 
             horizontal.setPosition(0.5);
+            stop();
         }
     }
 
@@ -432,27 +418,6 @@ public class EasyOpenCVExample extends LinearOpMode
             }
             stopDriving();
 
-//            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//
-//            rightFrontMotor.setTargetPosition(-distance(5));
-//            rightBackMotor.setTargetPosition(distance(5));
-//            leftBackMotor.setTargetPosition(-distance(5));
-//            leftFrontMotor.setTargetPosition(distance(5));
-//
-//            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            strafe(0.4);
-//
-//            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-//
-//            }
-
             vertical.setPower(-0.1);
             Thread.sleep(2000);
             vertical.setPower(0);
@@ -480,27 +445,6 @@ public class EasyOpenCVExample extends LinearOpMode
 
             }
             stopDriving();
-
-//            rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//            leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-//
-//            rightFrontMotor.setTargetPosition(distance(24));
-//            rightBackMotor.setTargetPosition(distance(24));
-//            leftBackMotor.setTargetPosition(distance(24));
-//            leftFrontMotor.setTargetPosition(distance(24));
-//
-//            rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//
-//            forward(power);
-//
-//            while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-//
-//            }
         }
     }
 
@@ -685,23 +629,6 @@ public class EasyOpenCVExample extends LinearOpMode
         leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
         leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
-
-        rightFrontMotor.setTargetPosition(-distance(3.5));
-        rightBackMotor.setTargetPosition(-distance(3.5));
-        leftBackMotor.setTargetPosition(distance(3.5));
-        leftFrontMotor.setTargetPosition(distance(3.5));
-
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        turn(0.3);
-
-        while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-        }
-
         stopDriving();
 
         shooter.setPower(1);
@@ -717,27 +644,6 @@ public class EasyOpenCVExample extends LinearOpMode
         conveyerBeltLeft.setPower(0);
         Thread.sleep(800);
 
-        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
-
-        rightFrontMotor.setTargetPosition(-distance(1));
-        rightBackMotor.setTargetPosition(-distance(1));
-        leftBackMotor.setTargetPosition(distance(1));
-        leftFrontMotor.setTargetPosition(distance(1));
-
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        turn(0.3);
-
-        while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-        }
 
         stopDriving();
 
@@ -747,70 +653,19 @@ public class EasyOpenCVExample extends LinearOpMode
         Thread.sleep(50);
 
 
-
         conveyerBeltRight.setPower(0);
         conveyerBeltLeft.setPower(0);
-        Thread.sleep(100);
-
-        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
-
-        rightFrontMotor.setTargetPosition(-distance(1.5));
-        rightBackMotor.setTargetPosition(-distance(1.5));
-        leftBackMotor.setTargetPosition(distance(1.5));
-        leftFrontMotor.setTargetPosition(distance(1.5));
-
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        turn(0.3);
-
-        while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-        }
-
-        stopDriving();
+        Thread.sleep(500);
 
         conveyerBeltRight.setPower(-1);
         conveyerBeltLeft.setPower(1);
-
         Thread.sleep(50);
 
         conveyerBeltRight.setPower(0);
         conveyerBeltLeft.setPower(0);
 
-        rightFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        rightBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftBackMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-        leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
-
-
-        rightFrontMotor.setTargetPosition(distance(7));
-        rightBackMotor.setTargetPosition(distance(7));
-        leftBackMotor.setTargetPosition(-distance(7));
-        leftFrontMotor.setTargetPosition(-distance(7));
-
-        rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        turn(-0.3);
-
-        while (leftBackMotor.isBusy() || rightBackMotor.isBusy() || rightFrontMotor.isBusy() || leftFrontMotor.isBusy()) {
-
-        }
-
-        conveyerBeltRight.setPower(0);
-        conveyerBeltLeft.setPower(0);
 
         shooter.setPower(0);
-
         stopDriving();
     }
 }

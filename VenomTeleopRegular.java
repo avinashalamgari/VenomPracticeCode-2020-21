@@ -141,9 +141,9 @@ public class VenomTeleopRegular extends OpMode {
     }
     public void servoVertical(){
         robot.vertical.setPower(0);
-        if(gamepad2.dpad_down){
+        if(gamepad2.dpad_up){
             robot.vertical.setPower(1);
-        } else if (gamepad2.dpad_up){
+        } else if (gamepad2.dpad_down){
             robot.vertical.setPower(-1);
         }
 
