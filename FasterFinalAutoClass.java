@@ -244,6 +244,10 @@ public class FasterFinalAutoClass extends LinearOpMode {
         double circumference = (Math.PI)*(diameter);
         double rotationsNeeded = inches/circumference;
         double target = rotationsNeeded * ticksPerRev;
+        /*
+         * Circumference = Distance traveled in 1 rotation
+         * 1440 encoder ticks is 1 rotation
+         */
         return (int)target;
     }
     public void forward(double power){
@@ -812,10 +816,10 @@ public class FasterFinalAutoClass extends LinearOpMode {
         leftFrontMotor.setMode(DcMotor.RunMode.RESET_ENCODERS);
 
 
-        rightFrontMotor.setTargetPosition(-distance(1));
-        rightBackMotor.setTargetPosition(-distance(1));
-        leftBackMotor.setTargetPosition(distance(1));
-        leftFrontMotor.setTargetPosition(distance(1));
+        rightFrontMotor.setTargetPosition(-distance(1.5));
+        rightBackMotor.setTargetPosition(-distance(1.5));
+        leftBackMotor.setTargetPosition(distance(1.5));
+        leftFrontMotor.setTargetPosition(distance(1.5));
 
         rightFrontMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBackMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
